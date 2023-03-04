@@ -7,7 +7,11 @@ Inputs:  min/max ANSI code, min/max string length, count of output strings, alph
 
 Input boundaries:
 min/max ANSI code -- 1 - 255 (default 1, 255)
+
 min/max string length -- 1 to Excel cell content limit (default 3, 100)
+
 count of output strings -- 1 to Excel worksheet row limit (default 1)
+
 alpha case -- "Both", "Upper", "Lower" (default "Both")
+
 ANSI range -- "Alpha", "Numeric", "Alphanumeric", "All" (Default "All")
