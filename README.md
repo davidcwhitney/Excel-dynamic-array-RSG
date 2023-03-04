@@ -1,5 +1,5 @@
 # Description
-Highly flexible random string generator written using Microsoft Excel 365 dynamic array formula functions and no recursive lambdas. 
+Highly flexible random string generator with no recursion. 
 
 Very fast for most tasks.  Passable if you want a lot of strings where some may be very short and others very long.  Tested 1 million random strings of 10 digits, run time between 2 and 3 mins.  Excel does not crash or barf or run out of memory or bog down the CPU.  It just takes its own sweet time.  
 
@@ -9,14 +9,14 @@ Very fast for most tasks.  Passable if you want a lot of strings where some may 
 \\
 \\NOTE no parameter is optional but all have default values, so the formula may be written   
 \\=Random_String_Generator(, , , , , , )
-\\Alpha case only has effect when alpha characters are in the custom or predefined range selected.  I
+\\Alpha case only has effect when alpha characters are in the custom or predefined range selected.  
 \\
 \\Input boundaries:
-\\ANSI code -- 1 - 255 (default 1, 255)
-\\string length -- 1 to Excel cell content limit (default 3, 100)
-\\count of output strings -- 1 to Excel worksheet row limit (default 1)
-\\alpha case -- "Both", "Upper", "Lower" (default "Both")
-\\ANSI range -- "Alpha", "Numeric", "Alphanumeric", "All" (Default "All")
+\\ANSI code -- 1 - 255
+\\string length -- 1 to Excel cell content limit
+\\count of output strings -- 1 to Excel worksheet row limit
+\\alpha case -- "Both", "Upper", "Lower"
+\\ANSI range -- "Alpha", "Numeric", "Alphanumeric", "All"
 
 Random_String_Generator = LET(
     DefaultMinANSI, 1,
@@ -33,20 +33,20 @@ Random_String_Generator = LET(
     CountOfStrings, IF(ISOMITTED(intCountOfStrings), DefaultCountOfStrings, intCountOfStrings),
     AlphaCase, IF(ISOMITTED(strCaseSelection), DefaultAlphaCase, strCaseSelection),
     ANSIRange, IF(ISOMITTED(strANSIRangeSelection), DefaultANSIRange, strANSIRangeSelection),
-    ANSIDigits, SEQUENCE(10, , CODE("0")),
-    ANSILCaseLetters, SEQUENCE(26, , CODE("a")),
-    ANSIUCaseLetters, SEQUENCE(26, , CODE("A")),
-    ANSILetters, SWITCH(
+    ASCIIDigits, SEQUENCE(10, , CODE("0")),
+    ASCIILCaseLetters, SEQUENCE(26, , CODE("a")),
+    ASCIIUCaseLetters, SEQUENCE(26, , CODE("A")),
+    ASCIILetters, SWITCH(
         AlphaCase,
-        "Both", VSTACK(ANSILCaseLetters, ANSIUCaseLetters),
-        "Upper", ANSIUCaseLetters,
-        "Lower", ANSILCaseLetters
+        "Both", VSTACK(ASCIILCaseLetters, ASCIIUCaseLetters),
+        "Upper", ASCIIUCaseLetters,
+        "Lower", ASCIILCaseLetters
     ),
     ANSI, SWITCH(
         ANSIRange,
-        "Alpha", ANSILetters,
-        "Numeric", ANSIDigits,
-        "Alphanumeric", VSTACK(ANSIDigits, ANSILetters),
+        "Alpha", ASCIILetters,
+        "Numeric", ASCIIDigits,
+        "Alphanumeric", VSTACK(ASCIIDigits, ASCIILetters),
         "All", SEQUENCE(MaxANSI, , MinANSI)
     ),
     CountOfANSI, COUNT(ANSI),
