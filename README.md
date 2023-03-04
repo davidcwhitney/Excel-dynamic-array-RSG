@@ -1,9 +1,11 @@
-# Excel-dynamic-array-RSG
-Highly flexible random string generator written using Microsoft Excel 365 dynamic array formulae and no recursive lambdas.  I wrote this as an exercise.  It could be more efficient and/or elegant.  This is largely a linear approach.  As written, everything is obvious.  I will make another version that works differently but is much less readable.
+# Description
+Highly flexible random string generator written using Microsoft Excel 365 dynamic array formulae and no recursive lambdas. 
 
 Very fast for most tasks.  Excel does not crash or barf or run out of memory or bog down the CPU if you want a lot of strings where some may be very long.  It just takes its own sweet time.  Tested 1 million random strings of 10 digits, run time between 2 and 3 mins.  The bottleneck is not count of strings or length of string, it is gap between min and max length of string.  For fun tested filling the cell to 32,267 character limit.  One row is instantaneous.  Run time for 20 rows was a few seconds but this significantly taxed the machine.
 
-Inputs:  
+### Code
+```
+\\Inputs:  
 
 min and max ANSI code, min and max string length, count of output strings, alpha case, ANSI range.  
 
