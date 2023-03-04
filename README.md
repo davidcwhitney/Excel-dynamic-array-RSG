@@ -5,15 +5,17 @@ Very fast for most tasks.  Excel does not crash or barf or run out of memory or 
 
 Inputs:  
 
-min/max ANSI code, min/max string length, count of output strings, alpha case, ANSI range.  
+min and max ANSI code, min and max string length, count of output strings, alpha case, ANSI range.  
 
-Alpha case only has effect when those characters are in the range selected by min/max or in the selected predefined range.  No parameters are optional but all have default values, so the formula may be written =Random_String_Generator(, , , , , , ).
+No parameters are optional but all have default values, so the formula may be written =Random_String_Generator(, , , , , , ).
+
+Alpha case only has effect when those characters are in the range selected by min/max or in the selected predefined range.  It is possible to submit parameters that result in an empty array error or no visible characters.  
 
 Input boundaries:
 
-min/max ANSI code -- 1 - 255 (default 1, 255)
+ANSI code -- 1 - 255 (default 1, 255)
 
-min/max string length -- 1 to Excel cell content limit (default 3, 100)
+string length -- 1 to Excel cell content limit (default 3, 100)
 
 count of output strings -- 1 to Excel worksheet row limit (default 1)
 
