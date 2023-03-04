@@ -9,7 +9,7 @@ Very fast for most tasks.  Passable if you want a lot of strings where some may 
 \\
 \\NOTE no parameter is optional but all have default values, so the formula may be written   
 \\=Random_String_Generator(, , , , , , )
-\\Alpha case only has effect when those characters are in the custom or predefined range selected.  I
+\\Alpha case only has effect when alpha characters are in the custom or predefined range selected.  I
 \\
 \\Input boundaries:
 \\ANSI code -- 1 - 255 (default 1, 255)
