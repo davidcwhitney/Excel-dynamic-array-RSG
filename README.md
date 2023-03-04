@@ -1,26 +1,73 @@
 # Description
-Highly flexible random string generator written using Microsoft Excel 365 dynamic array formulae and no recursive lambdas. 
+Highly flexible random string generator written using Microsoft Excel 365 dynamic array formula functions and no recursive lambdas. 
 
-Very fast for most tasks.  Excel does not crash or barf or run out of memory or bog down the CPU if you want a lot of strings where some may be very long.  It just takes its own sweet time.  Tested 1 million random strings of 10 digits, run time between 2 and 3 mins.  The bottleneck is not count of strings or length of string, it is gap between min and max length of string.  For fun tested filling the cell to 32,267 character limit.  One row is instantaneous.  Run time for 20 rows was a few seconds but this significantly taxed the machine.
+Very fast for most tasks.  Passable if you want a lot of strings where some may be very short and others very long.  Tested 1 million random strings of 10 digits, run time between 2 and 3 mins.  Excel does not crash or barf or run out of memory or bog down the CPU.  It just takes its own sweet time.  
 
 ### Code
 ```
-\\Inputs:  
+\\Inputs -- NOTE no parameter is optional but all have default values, so the formula may be written =Random_String_Generator(, , , , , , ): 
+\\
+\\min and max ANSI code, min and max string length, count of output strings, alpha case, ANSI range.  
+\\
+\\Alpha case only has effect when those characters are in the custom or predefined range selected.  I
+\\
+\\Input boundaries:
+\\ANSI code -- 1 - 255 (default 1, 255)
+\\string length -- 1 to Excel cell content limit (default 3, 100)
+\\count of output strings -- 1 to Excel worksheet row limit (default 1)
+\\alpha case -- "Both", "Upper", "Lower" (default "Both")
+\\ANSI range -- "Alpha", "Numeric", "Alphanumeric", "All" (Default "All")
 
-min and max ANSI code, min and max string length, count of output strings, alpha case, ANSI range.  
-
-No parameters are optional but all have default values, so the formula may be written =Random_String_Generator(, , , , , , ).
-
-Alpha case only has effect when those characters are in the range selected by min/max or in the selected predefined range.  It is possible to submit parameters that result in an empty array error or no visible characters.  
-
-Input boundaries:
-
-ANSI code -- 1 - 255 (default 1, 255)
-
-string length -- 1 to Excel cell content limit (default 3, 100)
-
-count of output strings -- 1 to Excel worksheet row limit (default 1)
-
-alpha case -- "Both", "Upper", "Lower" (default "Both")
-
-ANSI range -- "Alpha", "Numeric", "Alphanumeric", "All" (Default "All")
+Random_String_Generator = LET(
+    DefaultMinANSI, 1,
+    DefaultMaxANSI, 255,
+    DefaultMinLength, 3,
+    DefaultMaxLength, 100,
+    DefaultCountOfStrings, 1,
+    DefaultAlphaCase, "Both",
+    DefaultANSIRange, "All",
+    MinANSI, IF(ISOMITTED(intMinANSI), DefaultMinANSI, intMinANSI),
+    MaxANSI, IF(ISOMITTED(intMaxANSI), DefaultMaxANSI, intMaxANSI),
+    MinStringLength, IF(ISOMITTED(intMinLength), DefaultMinLength, intMinLength),
+    MaxStringLength, IF(ISOMITTED(intMaxLength), DefaultMaxLength, intMaxLength),
+    CountOfStrings, IF(ISOMITTED(intCountOfStrings), DefaultCountOfStrings, intCountOfStrings),
+    AlphaCase, IF(ISOMITTED(strCaseSelection), DefaultAlphaCase, strCaseSelection),
+    ANSIRange, IF(ISOMITTED(strANSIRangeSelection), DefaultANSIRange, strANSIRangeSelection),
+    ANSIDigits, SEQUENCE(10, , CODE("0")),
+    ANSILCaseLetters, SEQUENCE(26, , CODE("a")),
+    ANSIUCaseLetters, SEQUENCE(26, , CODE("A")),
+    ANSILetters, SWITCH(
+        AlphaCase,
+        "Both", VSTACK(ANSILCaseLetters, ANSIUCaseLetters),
+        "Upper", ANSIUCaseLetters,
+        "Lower", ANSILCaseLetters
+    ),
+    ANSI, SWITCH(
+        ANSIRange,
+        "Alpha", ANSILetters,
+        "Numeric", ANSIDigits,
+        "Alphanumeric", VSTACK(ANSIDigits, ANSILetters),
+        "All", SEQUENCE(MaxANSI, , MinANSI)
+    ),
+    CountOfANSI, COUNT(ANSI),
+    ANSIIndexed, HSTACK(SEQUENCE(CountOfANSI, , 1), ANSI),
+    BaseArray, SWITCH(
+        TRUE,
+        LEFT(ANSIRange, 5) = "Alpha", CHAR(
+            MAP(
+                RANDARRAY(CountOfStrings, MaxStringLength, 1, CountOfANSI, TRUE),
+                LAMBDA(x,
+                    XLOOKUP(x, INDEX(ANSIIndexed, , 1), INDEX(ANSIIndexed, , 2), " absent", 0, 2)
+                )
+            )
+        ),
+        ANSIRange = "All", CHAR(RANDARRAY(CountOfStrings, MaxStringLength, MinANSI, MaxANSI, TRUE)),
+        ANSIRange = "Numeric", CHAR(
+            RANDARRAY(CountOfStrings, MaxStringLength, CODE("0"), CODE("9"), TRUE)
+        )
+    ),
+    StringLengthArray, RANDARRAY(ROWS(BaseArray), , MinStringLength, MaxStringLength, TRUE),
+    BaseArrayConcatenated, BYROW(BaseArray, LAMBDA(r, CONCAT(r))),
+    output, LEFT(BaseArrayConcatenated, StringLengthArray),
+    output
+)
