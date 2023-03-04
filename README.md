@@ -5,9 +5,9 @@ Very fast for most tasks.  Passable if you want a lot of strings where some may 
 
 ### Code
 ```
-\\Inputs -- NOTE no parameter is optional but all have default values, so the formula may be written =Random_String_Generator(, , , , , , ): 
+\\Inputs -- min and max ANSI code, min and max string length, count of output strings, alpha case, ANSI range.: 
 \\
-\\min and max ANSI code, min and max string length, count of output strings, alpha case, ANSI range.  
+\\NOTE no parameter is optional but all have default values, so the formula may be written =Random_String_Generator(, , , , , , )  
 \\
 \\Alpha case only has effect when those characters are in the custom or predefined range selected.  I
 \\
