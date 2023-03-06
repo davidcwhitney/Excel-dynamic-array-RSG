@@ -50,7 +50,7 @@ Random_String_Generator = LET(
         "All", SEQUENCE(MaxANSI, , MinANSI)
     ),
     CountOfANSI, COUNT(ANSI),
-    ANSIIndexed, HSTACK(SEQUENCE(CountOfANSI, , 1), ANSI),
+    ANSIIndexed, HSTACK(SEQUENCE(CountOfANSI), ANSI),
     BaseArray, SWITCH(
         TRUE,
         LEFT(ANSIRange, 5) = "Alpha", CHAR(
