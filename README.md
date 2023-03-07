@@ -16,9 +16,9 @@ Very fast for most tasks.  Passable if you want a lot of strings where some may 
 \\string length -- 1 to Excel cell content limit
 \\count of output strings -- 1 to Excel worksheet row limit
 \\alpha case -- "Both", "Upper", "Lower"
-\\ANSI range -- "Alpha", "Numeric", "Alphanumeric", "All"
+\\ANSI range -- "Alpha", "Numeric", "Alphanumeric", "All printing", "All"
 
-Random_String_Generator = LET(
+=LET(
     DefaultMinANSI, 1,
     DefaultMaxANSI, 255,
     DefaultMinLength, 3,
@@ -33,12 +33,33 @@ Random_String_Generator = LET(
     CountOfStrings, IF(ISOMITTED(intCountOfStrings), DefaultCountOfStrings, intCountOfStrings),
     AlphaCase, IF(ISOMITTED(strCaseSelection), DefaultAlphaCase, strCaseSelection),
     ANSIRange, IF(ISOMITTED(strANSIRangeSelection), DefaultANSIRange, strANSIRangeSelection),
+    ANSISequence, SEQUENCE(255),
+    ASCIICanonicalNonPrinting, SEQUENCE(32),
     ASCIIDigits, SEQUENCE(10, , CODE("0")),
-    ASCIILCaseLetters, SEQUENCE(26, , CODE("a")),
     ASCIIUCaseLetters, SEQUENCE(26, , CODE("A")),
+    ASCIILCaseLetters, SEQUENCE(26, , CODE("a")),
+    ASCIIDelete, 127,
+    ANSINonPrinting, {129; 131; 136; 144; 152},
+    ANSINonBreakingSpace, 160,
+    comment, "ANSINonAlphanumericPrinting is inferred as 'absent from all enumerated sets'",
+    ANSIAlphanumericNonPrinting, HSTACK(
+        NOT(ISNA(XMATCH(ANSISequence, ASCIIDigits, 0, 2))),
+        NOT(ISNA(XMATCH(ANSISequence, ASCIIUCaseLetters, 0, 2))),
+        NOT(ISNA(XMATCH(ANSISequence, ASCIILCaseLetters, 0, 2))),
+        NOT(ISNA(XMATCH(ANSISequence, ASCIICanonicalNonPrinting, 0, 2))),
+        NOT(ISNA(XMATCH(ANSISequence, ASCIIDelete, 0, 2))),
+        NOT(ISNA(XMATCH(ANSISequence, ANSINonPrinting, 0, 2))),
+        NOT(ISNA(XMATCH(ANSISequence, ANSINonBreakingSpace, 0, 2)))
+    ),
+    ANSINonAlphanumericPrintingUnfiltered, SEQUENCE(255) *
+        --BYROW(ANSIAlphanumericNonPrinting, LAMBDA(r, ISNA(MATCH(TRUE, r, 0)))),
+    ANSINonAlphanumericPrinting, FILTER(
+        ANSINonAlphanumericPrintingUnfiltered,
+        ANSINonAlphanumericPrintingUnfiltered <> 0
+    ),
     ASCIILetters, SWITCH(
         AlphaCase,
-        "Both", VSTACK(ASCIILCaseLetters, ASCIIUCaseLetters),
+        "Both", VSTACK(ASCIIUCaseLetters, ASCIILCaseLetters),
         "Upper", ASCIIUCaseLetters,
         "Lower", ASCIILCaseLetters
     ),
@@ -47,13 +68,14 @@ Random_String_Generator = LET(
         "Alpha", ASCIILetters,
         "Numeric", ASCIIDigits,
         "Alphanumeric", VSTACK(ASCIIDigits, ASCIILetters),
+        "All printing", SORT(VSTACK(ASCIIDigits, ASCIILetters, ANSINonAlphanumericPrinting)),
         "All", SEQUENCE(MaxANSI, , MinANSI)
     ),
     CountOfANSI, COUNT(ANSI),
-    ANSIIndexed, HSTACK(SEQUENCE(CountOfANSI), ANSI),
+    ANSIIndexed, HSTACK(SEQUENCE(CountOfANSI, , 1), ANSI),
     BaseArray, SWITCH(
         TRUE,
-        LEFT(ANSIRange, 5) = "Alpha", CHAR(
+        OR(ANSIRange = "All printing", LEFT(ANSIRange, 5) = "Alpha"), CHAR(
             MAP(
                 RANDARRAY(CountOfStrings, MaxStringLength, 1, CountOfANSI, TRUE),
                 LAMBDA(x,
