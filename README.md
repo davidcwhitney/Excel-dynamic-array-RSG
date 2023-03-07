@@ -3,7 +3,7 @@ Highly flexible random string generator with no recursion.
 Includes options for min/max ANSI code, min/max string length, count of output strings, alpha case. 
 Also permits restricting output to ANSI ranges Alpha, Numeric, Alphanumeric, All printing, All.
 
-Very fast for most tasks.  Passable if you want a lot of strings where some may be very short and others very long.  Tested 1 million random strings of 10 digits, run time between 2 and 3 mins.  Excel does not crash or barf or run out of memory or bog down the CPU.  It just takes its own sweet time.  
+Very fast for most tasks.  Passable if you want a lot of strings where some may be very short and others very long.  Tested 1 million random strings of digits fixed length 10, run time between 2 and 3 mins.  Excel does not crash or barf or run out of memory or bog down the CPU.  It just takes its own sweet time.  
 
 ### Code
 ```
