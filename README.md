@@ -78,11 +78,13 @@ Very fast for most tasks.  Passable if you want a lot of strings where some may 
     BaseArray, SWITCH(
         TRUE,
         OR(ANSIRange = "All printing", LEFT(ANSIRange, 5) = "Alpha"), CHAR(
-            MAP(
+            XLOOKUP(
                 RANDARRAY(CountOfStrings, MaxStringLength, 1, CountOfANSI, TRUE),
-                LAMBDA(x,
-                    XLOOKUP(x, INDEX(ANSIIndexed, , 1), INDEX(ANSIIndexed, , 2), " absent", 0, 2)
-                )
+                INDEX(ANSIIndexed, , 1),
+                INDEX(ANSIIndexed, , 2),
+                " absent",
+                0,
+                2
             )
         ),
         ANSIRange = "All", CHAR(RANDARRAY(CountOfStrings, MaxStringLength, MinANSI, MaxANSI, TRUE)),
@@ -92,6 +94,14 @@ Very fast for most tasks.  Passable if you want a lot of strings where some may 
     ),
     StringLengthArray, RANDARRAY(ROWS(BaseArray), , MinStringLength, MaxStringLength, TRUE),
     BaseArrayConcatenated, BYROW(BaseArray, LAMBDA(r, CONCAT(r))),
+    test, XLOOKUP(
+        RANDARRAY(CountOfStrings, MaxStringLength, 1, CountOfANSI, TRUE),
+        INDEX(ANSIIndexed, , 1),
+        INDEX(ANSIIndexed, , 2),
+        " absent",
+        0,
+        2
+    ),
     output, LEFT(BaseArrayConcatenated, StringLengthArray),
     output
 )
