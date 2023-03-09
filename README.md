@@ -3,7 +3,9 @@ Highly flexible random string generator with no recursion.
 Includes options for min/max ANSI code, min/max string length, count of output strings, alpha case. 
 Also permits restricting output to ANSI ranges Alpha, Numeric, Alphanumeric, All printing, All.
 
-Very fast for most tasks.  Passable if you want a lot of strings where some may be very short and others very long.  Tested 1 million random strings of digits fixed length 10, run time between 2 and 3 mins.  Excel does not crash or barf or run out of memory or bog down the CPU.  It just takes its own sweet time.  
+Very fast for most tasks.  Passable if you want a lot of strings where some may be very short and others very long.  Tested 1 million random strings of fixed length 10 with difference character sets, run time about 2 mins.  Excel does not crash or barf or run out of memory or bog down the CPU.  It just takes its own sweet time. 
+
+This could certainly be improved upon in terms of performance.  I left it as written for readability and ease of customization.  If the built-in flexibility is not sufficient, you can create your own custom category and add it as a defined character set.  1) Add its name to the SWTICH defining the ANSI variable 2) Add its definition to BaseArray.  The CHAR(XLOOKUP(RANDARRAY pattern is for non-contiguous ranges (NOTE uses binary lookup and must be sorted ascending), the CHAR(RANDARRAY pattern for contiguous. 
 
 ### Code
 ```
